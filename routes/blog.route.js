@@ -54,6 +54,28 @@ router.patch("/update/:id", auth, checkAccess(ROLES.author), async (req, res) =>
 })
 
 // 4. Delete blog - Need auth / Author of this blog
+router.delete("/delete/:id", auth, checkAccess(ROLES.author), async (req, res) => {
+    try {
+        const blogId = req.params.id;
+        const blog = await Blog.findById(blogId);
+
+        // If the blog doesn't exist
+        if (!blog) {
+            return res.status(404).json({ message: "Blog not found!" })
+        }
+
+        // Check if this author is actual writer of this blog
+        if (req.userId.toString() !== blog.author.toString()) {
+            return res.status(403).json({ message: "Forbidden!" })
+        }
+
+        await Blog.findByIdAndDelete(blogId);
+        res.json({ message: "Deleted" })
+    } catch (err) {
+        res.status(400).json({ message: "Something went wrong!" })
+    }
+})
+
 // DIY
 
 // 5. Get a specific blog - No need to auth
@@ -64,7 +86,7 @@ router.get("/:id", async (req, res) => {
         if (!blog) {
             return res.status(404).json({ message: "Blog not found!" })
         }
-        
+
         res.json(blog)
     } catch (err) {
         res.status(500).json({ message: "Something went wrong!" })

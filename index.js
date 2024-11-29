@@ -3,6 +3,11 @@ const connect = require("./config/db");
 const userRouter = require("./routes/user.route");
 const blogRouter = require("./routes/blog.route");
 const app = express();
+const cors = require("cors");
+
+app.use(cors({
+    origin: 'http://localhost:3000'
+}))
 
 require("dotenv").config();
 app.use(express.json()); // Body parsing
@@ -18,5 +23,5 @@ const PORT = process.env.PORT
 
 app.listen(PORT, async () => {
     await connect();
-    console.log("Listening to server on 1234!")
+    console.log("Listening to server on " + PORT)
 })
