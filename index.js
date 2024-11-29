@@ -5,11 +5,11 @@ const blogRouter = require("./routes/blog.route");
 const app = express();
 const cors = require("cors");
 
-app.use(cors({
-    origin: 'http://localhost:3000'
-}))
-
 require("dotenv").config();
+
+app.use(cors({
+    origin: process.env.FRONTEND_URL
+}))
 app.use(express.json()); // Body parsing
 
 app.use("/users", userRouter);
